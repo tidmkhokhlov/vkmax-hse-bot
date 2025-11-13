@@ -3,6 +3,7 @@ import uuid
 import json
 from dotenv import load_dotenv
 import os
+from pathlib import Path
 
 load_dotenv()
 API_KEY = os.getenv('API_GIGA')
@@ -11,16 +12,18 @@ def find_context_by_topic(topic: str):
     file_content = "Нет данных. Воспользуйтесь официальным сайтом https://nnov.hse.ru/"
     file_path = ""
 
-    if topic == 'общежития общая информация':
-        file_path = "data/general_dormitory.txt"
+    BASE_DIR = Path(__file__).parent
+
+    if topic == 'общежития общая информация' or topic == 'общежитие общая информация':
+        file_path = BASE_DIR / "data/general_dormitory.txt"
     elif topic == 'общежитие львовская':
-        file_path = "data/dormitory_leo.txt"
+        file_path = BASE_DIR / "data/dormitory_leo.txt"
     elif topic == 'общежитие кузнечиха' or topic == 'общежитие аксальта':
-        file_path = "data/dormitory_axalta.txt"
-    elif topic == 'военно учебный центр':
-        file_path = "data/milit.txt"
+        file_path = BASE_DIR / "data/dormitory_axalta.txt"
+    elif topic == 'военно учебный центр' or topic.startswith('воен'):
+        file_path = BASE_DIR / "data/milit.txt"
     elif topic == 'стипендия':
-        file_path = "data/scholarship.txt"
+        file_path = BASE_DIR / "data/scholarship.txt"
 
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
@@ -97,8 +100,10 @@ def get_answer(user_message):
   url = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
 
   topic = get_topic(auth_token, user_message).json()['choices'][0]['message']['content']
+  print(f"[TOPIC] {topic}")
 
   context = find_context_by_topic(topic)
+  print(f"[CONTEXT] {context}")
 
   prompt = f"Ты - помощник для абитуриентов НИУ ВШЭ Нижний Новгород. Ответь на вопрос пользователя в 3-5 предложений используя контекст. Обязательно дай в конце ссылку на источник. Вопрос пользователя: {user_message}. Контекст для ответа: {context}."
 
@@ -132,6 +137,3 @@ def get_answer(user_message):
   except requests.RequestException as e:
     print(f"Ошибка: {str(e)}")
     return -1
-
-answer = get_answer("Куда я могу написать по поводу общежития?")
-print(answer.json()['choices'][0]['message']['content'])
