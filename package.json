@@ -1,0 +1,14 @@
+{
+  "name": "vkmax-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "private": true,
+  "dependencies": {
+    "@maxhub/max-bot-api": "^0.2.1",
+    "dotenv": "^17.2.3"
+  }
+}
