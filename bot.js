@@ -18,8 +18,9 @@ const HELLO = "👋 Добро пожаловать!\n" +
     "Просто задайте свой вопрос, и я постараюсь найти на него ответ!"
 
 async function handleUserMessage(userMessage) {
+    const API_URL = process.env.API_URL || 'http://localhost:8000';
     try {
-        const response = await fetch('http://localhost:8000/ask', {
+        const response = await fetch(`${API_URL}/ask`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

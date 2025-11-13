@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.backend
+    container_name: hse-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - API_GIGA=${API_GIGA}
+    volumes:
+      - ./backend/data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile.bot
+    container_name: hse-bot
+    environment:
+      - MAXBOT_TOKEN=${MAXBOT_TOKEN}
+      - API_URL=http://backend:8000
+    depends_on:
+      - backend
+    restart: unless-stopped

@@ -1,0 +1,19 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Копируем package файлы
+COPY package*.json ./
+
+# Устанавливаем зависимости
+RUN npm install
+
+# Копируем исходный код бота
+COPY bot.js ./
+COPY .env ./
+
+# Создаем папку для логов
+RUN mkdir -p logs
+
+# Запускаем бота
+CMD ["node", "bot.js"]
